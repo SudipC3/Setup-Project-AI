@@ -1,0 +1,37 @@
+import expres from "express";
+import cors from "cors";
+import { loadEnv } from "./env";
+import { askStructured } from "./ask-core";
+
+loadEnv();
+
+const app = expres();
+
+app.use(
+    cors({
+        origin: ["http://localhost:3000"],
+        methods: ["GET", "POST", "OPTIONS", "PUT", "DELETE"],
+        allowedHeaders: ["Content-Type", "Authorization"],
+        credentials: true,
+    })
+)
+
+app.post("/ask", async (req, res) => {
+    try{
+        const {query} = req.body;
+        if(!query || !String(query).trim()) 
+            return res.status(400).json({ error: "Field 'query' is required." });
+
+        const out = await askStructured(query);
+        return res.status(200).json(out);
+
+    } catch {
+        return res.status(500).json({ error: "Failed to answer." });
+    }
+})
+
+const PORT = process.env.PORT;
+
+app.listen(PORT, () => {
+    console.log(`Server started on port ${PORT}`);
+})

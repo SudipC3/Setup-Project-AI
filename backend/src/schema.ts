@@ -6,4 +6,4 @@ export const AskResultSchema = z.object({
     confidence: z.number().min(0).max(1)
 })
 
-export type AskResult = z.infer<typeof AskResultSchema>;
+export type AskResult = z.infer<typeof AskResultSchema>; 
